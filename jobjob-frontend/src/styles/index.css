@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+    --color-bg-base: #0a2e2b;
+    --color-bg-surface: #0d3532;
+    --color-bg-elevated: #154744;
+    --color-border: #1f5450;
+
+    --color-cyan: #00ffff;
+    --color-cyan-hover: #33ffff;
+    --color-cyan-dark: #0d9488;
+    --color-cyan-glow: rgba(0, 255, 255, 0.15);
+
+    /* Legacy aliases for DSA visual components */
+    --color-teal-300: #33ffff;
+    --color-teal-400: #00ffff;
+    --color-teal-600: #0d9488;
+    --color-teal-glow: rgba(0, 255, 255, 0.15);
+
+    --color-text-primary: #ffffff;
+    --color-text-muted: #7ab8b3;
+
+    --color-accent-amber: #f59e0b;
+    --color-accent-rose: #f43f5e;
+    --color-success: #34d399;
+
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --radius-card: 1.25rem;
+    --radius-btn: 9999px;
+}
+
+/* ── Global Reset ──────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    background-color: var(--color-bg-base);
+    background-image: radial-gradient(ellipse 80% 50% at 50% 0%,
+            rgba(0, 255, 255, 0.06) 0%,
+            transparent 70%);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-cyan-dark);
+}
+
+/* ── Glass Card ──────────────────────────────────────────── */
+.glass-card {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    backdrop-filter: blur(12px);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.glass-card:hover {
+    border-color: var(--color-cyan-dark);
+    box-shadow: 0 0 20px var(--color-cyan-glow);
+}
+
+/* ── Auth Card — gradient card with generous internal padding ── */
+.auth-card {
+    background: linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg-surface) 100%);
+    border-radius: var(--radius-card);
+    padding: 3.5rem 3rem;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 2.5rem;
+    background: var(--color-cyan);
+    color: var(--color-bg-base);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.btn-primary:hover {
+    background: var(--color-cyan-hover);
+    box-shadow: 0 0 28px rgba(0, 245, 212, 0.4);
+    transform: scale(1.03);
+}
+
+.btn-primary:active {
+    transform: scale(0.97);
+}
+
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 2.5rem;
+    background: transparent;
+    color: var(--color-text-primary);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.btn-ghost:hover {
+    border-color: var(--color-cyan);
+    color: var(--color-cyan);
+    background: rgba(0, 245, 212, 0.06);
+    box-shadow: 0 0 16px var(--color-cyan-glow);
+}
+
+/* ── Input Fields — pure black pill-shaped, white text ────── */
+.input-field {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: #000000;
+    border: none;
+    border-radius: var(--radius-btn);
+    color: #ffffff;
+    font-size: 1rem;
+    font-family: var(--font-sans);
+    outline: none;
+    transition: box-shadow 0.2s;
+}
+
+.input-field::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.input-field:focus {
+    box-shadow: 0 0 0 2px rgba(0, 245, 212, 0.2);
+}
+
+/* ── Profile input — darker style inside teal card ───────── */
+.profile-input {
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    background: rgba(0, 12, 11, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-btn);
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-family: var(--font-sans);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.profile-input::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.profile-input:focus {
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 8px rgba(0, 245, 212, 0.15);
+}
+
+/* ── Skill Badge ──────────────────────────────────────────── */
+.skill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    background: rgba(0, 245, 212, 0.1);
+    border: 1px solid rgba(0, 245, 212, 0.3);
+    border-radius: 999px;
+    color: var(--color-teal-300);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* ── Match score utilities ────────────────────────────────── */
+.match-high {
+    color: var(--color-success);
+}
+
+.match-medium {
+    color: var(--color-accent-amber);
+}
+
+.match-low {
+    color: var(--color-accent-rose);
+}
+
+/* ── Swipe card wrapper — establishes the drag area ─────────── */
+.swipe-card-wrapper {
+    touch-action: pan-y;
+}
+
+/* ── Pulse slow (DSA visual components) ─────────────────────── */
+.pulse-slow {
+    animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}

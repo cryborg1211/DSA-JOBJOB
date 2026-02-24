@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: jobjob-backend
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/jobjob_db?useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+server:
+  port: 8080
+
+# JWT configuration
+jwt:
+  secret: ${JWT_SECRET:jobjob-dev-secret-key-change-in-production}
+  expiration-ms: 86400000  # 24 hours
+
+# CORS — allow Vite dev server
+cors:
+  allowed-origins: "http://localhost:5173"
+
+logging:
+  level:
+    com.jobjob: DEBUG
+    org.springframework.web: INFO
