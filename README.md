@@ -1,138 +1,209 @@
-# JobJob — Technical Documentation
-### DSA Course Project · Tinder-Style Recruitment Platform
+<div align="center">
 
-> **Purpose of this document:** Hand-off documentation for any developer or AI agent continuing this codebase. It covers the exact state of the system as of 2026-02-24, with full Big-O analysis of every custom data structure and algorithm.
+# 🚀 JobJob
 
----
+### A Tinder-Style Recruitment Platform Powered by Custom Data Structures
 
-## Table of Contents
+[![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.5-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![Maven](https://img.shields.io/badge/Maven-3.x-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)](https://maven.apache.org/)
+[![Status](https://img.shields.io/badge/Status-Green_State_%E2%9C%85-brightgreen?style=for-the-badge)](/)
 
-1. [Project Structure](#project-structure)
-2. [Tech Stack](#tech-stack)
-3. [Prerequisites](#prerequisites)
-4. [Local Development — Quick Start](#local-development--quick-start)
-   - [Backend (Spring Boot)](#1-backend-spring-boot)
-   - [Frontend (React + Vite)](#2-frontend-react--vite)
-5. [Environment Variables](#environment-variables)
-6. [Application Routes](#application-routes)
-7. [API Contract Reference](#api-contract-reference)
-8. [🔴 Mock Data Guide for Backend Developers](#-mock-data-guide-for-backend-developers)
-9. [Architecture Overview](#architecture-overview)
-10. [Production Build & Deployment](#production-build--deployment)
+</div>
 
 ---
 
-## Project Structure
+## 📖 Project Overview
+
+**JobJob** is a recruitment platform that reimagines the job-search experience through a **Tinder-style swipe interface**. Instead of passive filtering, candidates and recruiters interact with each other's profiles through swipe cards, driven by an intelligent backend matching engine.
+
+> **Academic Focus:** This project is built as a **Data Structures & Algorithms** exploration. The matching engine is powered entirely by **custom, hand-written implementations** of a Trie, a Max-Heap, and a Cosine Similarity calculator — with zero reliance on Java's built-in priority queue or collection utilities for these core computations.
+
+---
+
+## ✅ Current Milestones — Green State
+
+The project has reached a stable **Green State**, meaning the application compiles cleanly, starts without errors, and all DSA components are wired into the Spring context.
+
+| # | Milestone | Status |
+|---|-----------|--------|
+| 1 | Project backbone initialized with **Spring Boot 3.2.5** and **Java 17** | ✅ Done |
+| 2 | Clean package refactoring to `com.jobjob.*` namespace | ✅ Done |
+| 3 | Resolved all Maven / Lombok / Annotation Processor conflicts | ✅ Done |
+| 4 | **DSA Engine skeleton** (`Trie`, `MaxHeap`, `CosineSimilarity`) fully integrated | ✅ Done |
+| 5 | `MatchingService` wiring all three DSA engines together via Spring DI | ✅ Done |
+| 6 | Server live on **port 8080** with Spring Security enabled | ✅ Done |
+| 7 | React + Vite frontend scaffolded with Tinder-style swipe UI | ✅ Done |
+
+---
+
+## 🏗️ Architecture
 
 ```
 DSA-JOBJOB/
-├── jobjob-backend/          # Spring Boot 3 · Java 21 · Maven
+├── jobjob-backend/                  # Spring Boot REST API
 │   └── src/main/java/com/jobjob/
-│       ├── controller/      # REST endpoints
+│       ├── JobJobApplication.java   # Entry point & component scan root
+│       ├── controller/
+│       │   └── TestController.java  # Health-check endpoint
 │       ├── service/
-│       │   └── MatchingService.java   # DSA orchestrator (Trie + Cosine + Heap)
-│       └── dsa/
-│           ├── trie/        # JobTrie — prefix search
-│           ├── similarity/  # CosineSimilarity engine
-│           └── heap/        # RankingHeap — Max-Heap ranker
+│       │   └── MatchingService.java # Orchestrates all DSA engines
+│       └── dsa/                     # ← THE CORE DSA ENGINE
+│           ├── trie/
+│           │   ├── TrieNode.java    # Node with HashMap children
+│           │   └── JobTrie.java     # Prefix-tree for job title search
+│           ├── heap/
+│           │   ├── MaxHeap.java     # Generic array-based binary max-heap
+│           │   └── RankingHeap.java # Domain wrapper: ranks MatchEntry by score
+│           └── similarity/
+│               └── CosineSimilarity.java  # TF-IDF vector similarity scorer
 │
-└── jobjob-frontend/         # React 19 · Vite 7 · TypeScript · Tailwind v4
+└── jobjob-frontend/                 # React 19 + TypeScript + Vite SPA
     └── src/
-        ├── features/
-        │   ├── auth/        # LoginPage, RoleSelectionPage, ProfilePage
-        │   └── matching/
-        │       ├── MatchDashboard.tsx   # Swipe UI orchestrator
-        │       └── SwipeCard.tsx        # Framer Motion drag card
-        ├── components/
-        │   ├── layout/      # Navbar
-        │   └── dsa-visuals/ # RankingList, SimilarityRadar, TrieSearchInput
-        ├── hooks/
-        │   └── useMatchEngine.ts        # Calls matchService, updates store
-        ├── services/        # Axios API layer (api.ts, authService, jobService, matchService)
-        ├── store/           # Zustand stores (authStore, matchStore)
-        ├── types/           # TypeScript interfaces (match.ts, job.ts, candidate.ts)
-        └── styles/
-            └── index.css    # Design tokens + global utility classes
+        ├── components/              # SwipeCard, MatchDashboard, etc.
+        └── ...
 ```
 
 ---
 
-## Tech Stack
+## ⚙️ Core Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend framework | React 19 + TypeScript |
-| Build tool | Vite 7 |
-| Styling | Tailwind CSS v4 + Vanilla CSS design tokens |
-| Animation | Framer Motion 12 |
-| State management | Zustand 5 |
-| HTTP client | Axios 1 |
-| Icons | Lucide React |
-| Backend framework | Spring Boot 3.2 |
-| Language | Java 21 |
-| Security | Spring Security + JJWT 0.12 |
-| Database | MySQL (via Spring Data JPA) |
-| Build tool | Maven |
+### Backend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Java | 17 | Core language |
+| Spring Boot | 3.2.5 | REST API framework |
+| Spring Security | 6.x | Authentication & authorization |
+| Spring Data JPA | 3.x | ORM layer (next phase) |
+| Lombok | 1.18.30 | Boilerplate reduction |
+| MySQL Connector/J | 8.x | Database driver |
+| Maven | 3.x | Build & dependency management |
 
----
-
-## Prerequisites
-
-| Tool | Minimum Version | Check |
-|---|---|---|
-| Node.js | 18+ | `node -v` |
-| npm | 9+ | `npm -v` |
-| Java JDK | 21 | `java -version` |
-| Maven | 3.9+ | `mvn -version` |
-| MySQL | 8.0+ | `mysql --version` |
+### Frontend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React | 19 | UI library |
+| TypeScript | 5.9 | Type-safe JavaScript |
+| Vite | 7.x | Build tool & dev server |
+| Framer Motion | 12.x | Swipe animations & transitions |
+| React Router | 7.x | Client-side routing |
+| Zustand | 5.x | Global state management |
+| Tailwind CSS | 4.x | Utility-first styling |
+| Axios | 1.x | HTTP client for API calls |
 
 ---
 
-## Local Development — Quick Start
+## 🧠 DSA Engine — For the Professor
 
-### 1. Backend (Spring Boot)
+> **Important:** All data structures below are **custom, hand-written implementations** in the `com.jobjob.dsa` package. No `java.util.PriorityQueue`, no third-party libraries were used for these components.
 
-#### a. Create the MySQL database
+### 1. 🌳 Trie — Prefix Search (`dsa/trie/`)
 
-```sql
-CREATE DATABASE jobjob;
-CREATE USER 'jobjob_user'@'localhost' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON jobjob.* TO 'jobjob_user'@'localhost';
-FLUSH PRIVILEGES;
+**Purpose:** Real-time job title autocomplete suggestions.
+
+**Files:** `TrieNode.java`, `JobTrie.java`
+
+**Implementation detail:** Each `TrieNode` stores its children in a `HashMap<Character, TrieNode>`. The `JobTrie` performs a DFS traversal from the matched prefix node to collect all complete words, fully case-insensitive via `toLowerCase()` normalisation.
+
+| Operation | Complexity |
+|-----------|------------|
+| `insert(word)` | **O(m)** — m = word length |
+| `suggest(prefix, limit)` | **O(m + k)** — k = result count |
+| Space | **O(Σ × N × m)** |
+
+**Connected to:** `MatchingService.suggest()` → future `GET /api/jobs/suggest?prefix=<query>`
+
+---
+
+### 2. 🔺 Max-Heap — Candidate Ranking (`dsa/heap/`)
+
+**Purpose:** Sort all job matches for a candidate by score, yielding the top-N results.
+
+**Files:** `MaxHeap.java`, `RankingHeap.java`
+
+**Implementation detail:**
+- `MaxHeap<T extends Comparable<T>>` is a fully generic, **array-based binary max-heap** using an `ArrayList` as internal storage. It implements `siftUp` on `offer()` and `siftDown` on `poll()` manually.
+- `RankingHeap` wraps `MaxHeap` with a typed domain `record MatchEntry(id, title, company, score)` and exposes `push()` / `drainRanked()`.
+
+| Operation | Complexity |
+|-----------|------------|
+| `offer(item)` | **O(log n)** |
+| `poll()` | **O(log n)** |
+| `peek()` | **O(1)** |
+| `drainRanked()` | **O(n log n)** |
+
+**Connected to:** `MatchingService.rankJobsForCandidate()`
+
+---
+
+### 3. 📐 Cosine Similarity — Match Scoring (`dsa/similarity/`)
+
+**Purpose:** Compute a numeric match score (0–100%) between a candidate's CV and a job description.
+
+**File:** `CosineSimilarity.java`
+
+**Implementation detail:** Both CVs and JDs are represented as **sparse TF-IDF term-frequency vectors** (`Map<String, Double>`). The dot product iterates over the smaller map for efficiency. The score is then normalized by the Euclidean norms of both vectors.
+
+```
+similarity(A, B) = dot(A, B) / (||A|| × ||B||)   ∈ [0.0, 1.0]
 ```
 
-#### b. Configure `application.properties`
+Additional utilities exposed:
+- `intersectTerms()` — returns matched skills (shared keys)
+- `missingTerms()` — returns skills in JD that are absent from CV
 
-Create (or edit) `jobjob-backend/src/main/resources/application.properties`:
+| Operation | Complexity |
+|-----------|------------|
+| `compute(vecA, vecB)` | **O(n + m)** — n, m = unique terms |
+| Space | **O(n + m)** |
 
-```properties
-# Server
-server.port=8080
+**Connected to:** `MatchingService.compareVectors()`, `rankJobsForCandidate()`
 
-# Database
-spring.datasource.url=jdbc:mysql://localhost:3306/jobjob?useSSL=false&serverTimezone=UTC
-spring.datasource.username=jobjob_user
-spring.datasource.password=your_password
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=false
+---
 
-# JWT
-jwt.secret=your_256_bit_secret_key_here_change_in_production
-jwt.expiration-ms=86400000
+### DSA Data Flow
+
+```
+User Swipe Action
+      │
+      ▼
+MatchingService (Orchestrator)
+      │
+      ├──[Prefix Query]──▶ JobTrie.suggest()         ──▶ List<String>
+      │
+      ├──[Score Query]───▶ CosineSimilarity.compute() ──▶ double [0,1]
+      │
+      └──[Rank Query]────▶ RankingHeap.drainRanked()  ──▶ List<MatchEntry>
 ```
 
-#### c. Run the backend
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Java 17+
+- Maven 3.x (or use the included `mvnw` wrapper)
+- Node.js 18+ & npm
+- MySQL 8.x
+
+### Backend
 
 ```bash
 cd jobjob-backend
-mvn spring-boot:run
+
+# Run with Maven Wrapper (no local Maven required)
+.\mvnw spring-boot:run
 ```
 
-The API will be available at `http://localhost:8080`.
+The API will be live at **`http://localhost:8080`**.
 
----
+> **Note:** Spring Security is active. A generated password will be printed to the console on first run until authentication is fully configured.
 
-### 2. Frontend (React + Vite)
+### Frontend
 
 ```bash
 cd jobjob-frontend
@@ -140,296 +211,43 @@ npm install
 npm run dev
 ```
 
-The app will be available at **`http://localhost:5173`**.
-
-> **Proxy**: All `/api/*` requests from the frontend are automatically proxied to `http://localhost:8080` via `vite.config.ts`. No CORS configuration is needed during development.
+The UI will be live at **`http://localhost:5173`**.
 
 ---
 
-## Environment Variables
+## 🗺️ Roadmap
 
-The frontend reads no `.env` file by default — the proxy in `vite.config.ts` handles the backend URL. For production, set the `VITE_API_BASE_URL` variable and update `src/services/api.ts` accordingly.
+### P1 — Database Layer *(Next Phase)*
 
-The backend reads configuration from `application.properties` (see above). Do **not** commit secrets — use environment variable injection in CI/CD:
+- [ ] Design MySQL schema: `users`, `jobs`, `resumes`, `matches` tables
+- [ ] Create JPA `@Entity` classes mapped to the schema
+- [ ] Configure `application.yml` with live MySQL datasource
+- [ ] Seed initial data for development & demo
 
-```bash
-SPRING_DATASOURCE_PASSWORD=secret mvn spring-boot:run
-```
+### P2 — REST API Bridge
 
----
+- [ ] Implement `MatchController` to expose DSA engine results as REST endpoints
+  - `GET /api/jobs/suggest?prefix=<query>` → Trie autocomplete
+  - `POST /api/match/score` → Cosine similarity score
+  - `GET /api/match/rank/{candidateId}` → Ranked job list from Max-Heap
+- [ ] Replace stub `buildVector()` with a proper TF-IDF tokeniser
+- [ ] Integrate Spring Security with JWT-based auth
 
-## Application Routes
+### P3 — Frontend Integration
 
-| Path | Component | Auth Required |
-|---|---|---|
-| `/login` | `LoginPage` | No |
-| `/register` | `LoginPage` (register mode) | No |
-| `/select-role` | `RoleSelectionPage` | Yes |
-| `/profile-setup` | `ProfilePage` | Yes |
-| `/dashboard` | `MatchDashboard` (Swipe UI) | Yes |
-| `/match` | `MatchDashboard` (alias) | Yes |
-
-**Auth guard**: A `PrivateRoute` wrapper checks the Zustand `authStore` for a JWT token. If missing, it redirects to `/login`.
-
----
-
-## API Contract Reference
-
-All endpoints are prefixed with `/api`. The JWT Bearer token must be included in the `Authorization` header for all protected routes.
-
-### Auth
-
-| Method | Endpoint | Body | Response |
-|---|---|---|---|
-| `POST` | `/api/auth/login` | `{ username, password }` | `{ token, role }` |
-| `POST` | `/api/auth/register` | `{ username, password, role }` | `{ message }` |
-
-### Jobs
-
-| Method | Endpoint | Params / Body | Response |
-|---|---|---|---|
-| `GET` | `/api/jobs` | — | `Job[]` |
-| `GET` | `/api/jobs/:id` | — | `Job` |
-| `GET` | `/api/jobs/suggest` | `?prefix=<string>` | `string[]` (Trie suggestions) |
-| `POST` | `/api/jobs` | `JdDraft` body | `Job` |
-| `PUT` | `/api/jobs/:id` | `Partial<JdDraft>` body | `Job` |
-| `DELETE` | `/api/jobs/:id` | — | `204` |
-
-### Matching (DSA Engine)
-
-| Method | Endpoint | Params / Body | Response |
-|---|---|---|---|
-| `POST` | `/api/match/compare` | `{ candidateId, jobId }` | `MatchResult` |
-| `GET` | `/api/match/rank` | `?candidateId=<id>` | `RankedJob[]` |
-| `GET` | `/api/match/rank` | `?jobId=<id>` | `RankedJob[]` (for recruiters) |
-
-#### `MatchResult` shape (TypeScript)
-
-```ts
-interface MatchResult {
-  jobId: string;
-  candidateId: string;
-  overallScore: number;       // 0–100
-  breakdown: {
-    skillsMatch: number;
-    experienceMatch: number;
-    educationMatch: number;
-  };
-  matchedSkills: string[];
-  missingSkills: string[];
-  extraSkills: string[];
-  cvVector: Record<string, number>;
-  jdVector: Record<string, number>;
-}
-```
-
-#### `RankedJob` shape
-
-```ts
-interface RankedJob {
-  rank: number;
-  jobId: string;
-  jobTitle: string;
-  companyName: string;
-  score: number;   // 0–100
-}
-```
-
-#### `SwipeCardData` shape (new — for the swipe deck endpoint)
-
-```ts
-interface SwipeCardData {
-  id: string;
-  type: 'JOB' | 'CANDIDATE';
-  avatarUrl?: string;
-  title: string;       // Job title OR Candidate full name
-  subtitle: string;    // Company name OR latest role + location
-  skills: string[];
-  score: number;       // 0–100, from DSA Cosine engine
-  description?: string;
-}
-```
+- [ ] Connect `SwipeCard` component to live `GET /api/match/rank` endpoint
+- [ ] Display real-time match score badges from backend
+- [ ] Wire up the Trie autocomplete into the job search input
+- [ ] Implement swipe-to-accept / swipe-to-reject calls to the API
 
 ---
 
-## 🔴 Mock Data Guide for Backend Developers
+## 📄 License
 
-The frontend currently uses **hardcoded mock data** in several places while the backend API is being built. Every mock is clearly marked with a `// TODO: replace with real API call` comment pattern. Below is the complete list.
-
----
-
-### 1. Swipe Card Deck
-
-**📁 File:** `jobjob-frontend/src/features/matching/MatchDashboard.tsx`
-**Lines:** `MOCK_JOB_CARDS` (lines ~14–45) and `MOCK_CANDIDATE_CARDS` (lines ~47–76)
-
-These are the cards shown in the swipe UI. They are loaded into the `matchStore.swipeCards` deck on mount.
-
-**What the backend must provide:**
-
-- A new endpoint: `GET /api/match/swipe-deck`
-  - Query param: `role=CANDIDATE` → returns `SwipeCardData[]` of type `'JOB'`
-  - Query param: `role=RECRUITER` → returns `SwipeCardData[]` of type `'CANDIDATE'`
-  - The `score` field must be pre-computed by `MatchingService.compareVectors()` for the authenticated user
-  - Recommended page size: 10–20 cards per call (implement infinite-load later)
-
-**Replacement location in code:**
-
-```ts
-// In MatchDashboard.tsx — useEffect on mount
-// REPLACE this:
-const deck = role === 'RECRUITER' ? MOCK_CANDIDATE_CARDS : MOCK_JOB_CARDS;
-setSwipeCards(deck);
-
-// WITH something like:
-const { data } = await matchService.getSwipeDeck(role);
-setSwipeCards(data);
-```
+This project is developed for academic purposes as part of a Data Structures & Algorithms course.
 
 ---
 
-### 2. Candidate ID Placeholder
-
-**📁 File:** `jobjob-frontend/src/features/matching/MatchDashboard.tsx`
-**Line:** `const MOCK_CANDIDATE_ID = 'c-001';`
-
-This hardcoded string is passed to `rankJobsForCandidate()`. It should be replaced with the real candidate ID from the authenticated user's profile, which should be stored in `authStore` after login.
-
-**What the backend must include in the JWT payload / login response:**
-
-```json
-{ "token": "...", "role": "CANDIDATE", "userId": "actual-db-id" }
-```
-
-Then `authStore` should persist `userId` and the component reads `useAuthStore().userId`.
-
----
-
-### 3. RankingList Mock (Legacy)
-
-**📁 File:** `jobjob-frontend/src/components/dsa-visuals/RankingList.tsx`
-
-This component renders a scored list of jobs. It already receives `jobs: RankedJob[]` as props and is wired to `GET /api/match/rank?candidateId=...`. The mock was only in `MatchDashboard` (now removed from the main view). When you re-introduce this component into a detail view, the real API should work immediately.
-
----
-
-### 4. TrieSearchInput Suggestions
-
-**📁 File:** `jobjob-frontend/src/components/dsa-visuals/TrieSearchInput.tsx`
-
-Calls `GET /api/jobs/suggest?prefix=<input>`. The backend `MatchingService.suggest(prefix)` and `JobTrie` are already implemented. The Trie must be seeded with job titles — call `MatchingService.rebuildTrie(jobTitles)` on application startup (e.g. via a `@PostConstruct` in a `DataInitializer` bean).
-
----
-
-### 5. Backend `RankingHeap` — TODO inside MatchingService
-
-**📁 File:** `jobjob-backend/src/main/java/com/jobjob/service/MatchingService.java`
-**Line 81:**
-
-```java
-// TODO: replace "Title" / "Company" with real DB lookups
-rankingHeap.push(new RankingHeap.MatchEntry(jobId, "Job " + jobId, "Company", score * 100));
-```
-
-The `jobId` is correct, but job title and company name are placeholder strings. Replace with a `JobRepository.findById(jobId)` call to populate the `MatchEntry` with real data.
-
----
-
-### Summary Table
-
-| # | File | Line(s) | What to Replace | New API/Source |
-|---|---|---|---|---|
-| 1 | `MatchDashboard.tsx` | ~14–76 | `MOCK_JOB_CARDS` & `MOCK_CANDIDATE_CARDS` | `GET /api/match/swipe-deck?role=` |
-| 2 | `MatchDashboard.tsx` | ~82 | `MOCK_CANDIDATE_ID = 'c-001'` | `authStore.userId` from JWT |
-| 3 | `RankingList.tsx` | (props) | Already wired — just needs backend data | `GET /api/match/rank?candidateId=` |
-| 4 | `TrieSearchInput.tsx` | (service call) | Already wired — needs Trie seeded at startup | `GET /api/jobs/suggest?prefix=` |
-| 5 | `MatchingService.java` | line 81 | `"Job " + jobId`, `"Company"` | `JobRepository.findById(jobId)` |
-
----
-
-## Architecture Overview
-
-```
-Browser (React SPA)
-  │
-  │  /api/* requests (proxied by Vite in dev, Nginx in prod)
-  ▼
-Spring Boot REST API  (:8080)
-  │
-  ├── AuthController     → JWT issue / verify
-  ├── JobController      → CRUD + Trie suggestions
-  └── MatchController    → Cosine compare + Heap ranking
-       │
-       └── MatchingService
-            ├── JobTrie           (prefix search, O(m))
-            ├── CosineSimilarity  (TF-IDF dot product, O(n))
-            └── RankingHeap       (Max-Heap drain, O(k log n))
-                │
-                └── MySQL (JPA entities: User, Job, Candidate)
-```
-
----
-
-## Production Build & Deployment
-
-### Frontend — Build static assets
-
-```bash
-cd jobjob-frontend
-npm run build
-# Output: jobjob-frontend/dist/
-```
-
-Serve the `dist/` folder with **Nginx** (recommended). Sample Nginx config:
-
-```nginx
-server {
-    listen 80;
-    server_name yourdomain.com;
-
-    root /var/www/jobjob/dist;
-    index index.html;
-
-    # SPA fallback — send all routes to index.html
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Proxy API calls to Spring Boot
-    location /api/ {
-        proxy_pass http://127.0.0.1:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
-### Backend — Build JAR
-
-```bash
-cd jobjob-backend
-mvn clean package -DskipTests
-java -jar target/jobjob-backend-0.0.1-SNAPSHOT.jar
-```
-
-For production, run the JAR as a systemd service or inside a Docker container:
-
-```dockerfile
-FROM eclipse-temurin:21-jre
-COPY target/jobjob-backend-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
-```
-
-```bash
-docker build -t jobjob-backend .
-docker run -p 8080:8080 \
-  -e SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/jobjob \
-  -e SPRING_DATASOURCE_PASSWORD=secret \
-  -e JWT_SECRET=your_secret \
-  jobjob-backend
-```
-
----
-
-> **Last updated:** 2026-02-24 · **Team:** DSA-JOBJOB
+<div align="center">
+  <sub>Built with ☕ Java, 🌱 Spring Boot, and ⚛️ React — powered by custom DSA</sub>
+</div>
