@@ -1,6 +1,7 @@
-# 🚀 JobJob — DSA-Powered Recruitment Platform
+# JobJob — Technical Documentation
+### DSA Course Project · Tinder-Style Recruitment Platform
 
-A full-stack recruitment platform where **Candidates swipe Jobs** and **Recruiters swipe Resumes**, with matching scores powered by a custom Java DSA engine (Trie · Cosine Similarity · Max-Heap).
+> **Purpose of this document:** Hand-off documentation for any developer or AI agent continuing this codebase. It covers the exact state of the system as of 2026-02-24, with full Big-O analysis of every custom data structure and algorithm.
 
 ---
 

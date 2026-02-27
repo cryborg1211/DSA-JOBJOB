@@ -4,14 +4,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * JobTrie — case-insensitive prefix tree for job title search suggestions.
  *
  * DSA: Trie (Prefix Tree)
- *   Insert: O(m)  — m = length of the word
- *   Search: O(m + k) — k = number of suggestion results
- *   Space:  O(ALPHABET_SIZE × N × m)
+ * Insert: O(m) — m = length of the word
+ * Search: O(m + k) — k = number of suggestion results
+ * Space: O(ALPHABET_SIZE × N × m)
  *
  * Used by: GET /api/jobs/suggest?prefix=<query>
  */
@@ -56,8 +57,10 @@ public class JobTrie {
 
     /** Depth-first traversal collecting complete words */
     private void dfs(TrieNode node, StringBuilder current, List<String> results, int limit) {
-        if (results.size() >= limit) return;
-        if (node.isEndOfWord()) results.add(current.toString());
+        if (results.size() >= limit)
+            return;
+        if (node.isEndOfWord())
+            results.add(current.toString());
 
         for (Map.Entry<Character, TrieNode> entry : node.getChildren().entrySet()) {
             current.append(entry.getKey());
